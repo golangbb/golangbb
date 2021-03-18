@@ -1,6 +1,18 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golangbb/golangbb/v2/pkg/helpers"
+)
+
+var (
+	PORT = helpers.GetEnv("PORT", "3000")
+)
+
+func init() {
+	fmt.Println("🏗️ initializing golangBB...")
+}
 
 func main() {
 	app := fiber.New()
@@ -14,5 +26,5 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	app.Listen(":3000")
+	app.Listen(":" + PORT)
 }
