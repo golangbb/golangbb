@@ -17,10 +17,18 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
+# github.com/jinzhu/inflection v1.0.0
+github.com/jinzhu/inflection
+# github.com/jinzhu/now v1.1.2
+## explicit
+github.com/jinzhu/now
 # github.com/klauspost/compress v1.10.7
 github.com/klauspost/compress/flate
 github.com/klauspost/compress/gzip
 github.com/klauspost/compress/zlib
+# github.com/mattn/go-sqlite3 v1.14.6
+## explicit
+github.com/mattn/go-sqlite3
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
 # github.com/valyala/bytebufferpool v1.0.0
@@ -36,6 +44,18 @@ github.com/valyala/tcplisten
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
+# gorm.io/driver/sqlite v1.1.4
+## explicit
+gorm.io/driver/sqlite
+# gorm.io/gorm v1.21.3
+## explicit
+gorm.io/gorm
+gorm.io/gorm/callbacks
+gorm.io/gorm/clause
+gorm.io/gorm/logger
+gorm.io/gorm/migrator
+gorm.io/gorm/schema
+gorm.io/gorm/utils
 # gotest.tools/v3 v3.0.3
 ## explicit
 gotest.tools/v3/assert
