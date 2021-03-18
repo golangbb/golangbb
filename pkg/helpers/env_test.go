@@ -1,15 +1,16 @@
 package helpers
 
 import (
+	"gotest.tools/v3/assert"
 	"os"
 	"testing"
-"gotest.tools/v3/assert")
+)
 
 func TestGetEnv(t *testing.T) {
 	t.Run("should return env var from os", func(t *testing.T) {
 		envVarKey := "envVarKey"
 		envVarValue := "envVarValue"
-		fallbackValue:= "fallbackValue"
+		fallbackValue := "fallbackValue"
 
 		os.Setenv(envVarKey, envVarValue)
 		grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
@@ -23,7 +24,7 @@ func TestGetEnv(t *testing.T) {
 	t.Run("should return fallback value when env var not set", func(t *testing.T) {
 		envVarKey := "envVarKey"
 		envVarValue := "envVarValue"
-		fallbackValue:= "fallbackValue"
+		fallbackValue := "fallbackValue"
 
 		os.Unsetenv(envVarKey)
 		grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
