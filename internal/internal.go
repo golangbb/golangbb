@@ -5,6 +5,11 @@ import (
 )
 
 var (
-	PORT = helpers.GetEnv("PORT", "3000")
-	DATABASE_NAME = helpers.GetEnv("DATABASE_NAME", "golangbb.db")
+	keyPORT             = "PORT"
+	defaultPORT         = "3000"
+	keyDATABASENAME     = "DATABASENAME"
+	defaultDATABASENAME = "golang.db"
+
+	PORT         = helpers.GetEnv(keyPORT, defaultPORT)
+	DATABASENAME = helpers.GetEnv(keyDATABASENAME, defaultDATABASENAME)
 )
