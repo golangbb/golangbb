@@ -10,5 +10,4 @@ require (
 	github.com/onsi/gomega v1.11.0
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.21.3
-	gotest.tools/v3 v3.0.3
 )
