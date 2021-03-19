@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	constants "github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
+	"github.com/golangbb/golangbb/v2/internal/models"
 )
 
 
@@ -14,7 +15,7 @@ func init() {
 	database.Connect()
 
 	fmt.Println("[INIT]::RUNNING_DATABASE_MIGRATIONS 💾")
-	database.DB.AutoMigrate()
+	database.DB.AutoMigrate(&models.User{})
 
 	fmt.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
 }
