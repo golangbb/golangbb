@@ -1,6 +1,7 @@
 FROM golang:1.16.2-buster AS builder
 WORKDIR /opt/golangbb/builddir
 COPY . .
+RUN go test -v ./...
 RUN go build -a -ldflags "-linkmode external -extldflags '-static' -s -w" -o app ./cmd/main.go
 
 FROM alpine:latest
