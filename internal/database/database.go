@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	constants "github.com/golangbb/golangbb/v2/internal"
+	"github.com/golangbb/golangbb/v2/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -19,4 +20,10 @@ func Connect() {
 
 	DB = db
 	fmt.Println("[DATABASE]::CONNECTED 🔌")
+}
+
+func Initialise() {
+	fmt.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
+	DB.AutoMigrate(&models.User{})
+	fmt.Println("[DATABASE]::DATABASE_MIGRATIONS_COMPLETE 💾")
 }

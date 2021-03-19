@@ -13,4 +13,11 @@ var _ = Describe("database", func() {
 			})
 		})
 	})
+	Context("Initialise", func() {
+		When("TODO: Implement", func() {
+			It("should be implemented", func() {
+				Expect(true).Should(BeIdenticalTo(false))
+			})
+		})
+	})
 })
