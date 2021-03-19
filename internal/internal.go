@@ -1,6 +1,8 @@
 package internal
 
-import "github.com/golangbb/golangbb/v2/pkg/helpers"
+import (
+	"github.com/golangbb/golangbb/v2/pkg/helpers"
+)
 
 var (
 	PORT = helpers.GetEnv("PORT", "3000")

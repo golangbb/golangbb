@@ -1,7 +1,7 @@
 package database
 
 import (
-	constants "github.com/golangbb/golangbb/v2/internal"
+	"github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func Connect() {
 	log.Println("[DATABASE]::CONNECTING 🔌")
-	db, err := gorm.Open(sqlite.Open(constants.DATABASE_NAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(internal.DATABASE_NAME), &gorm.Config{})
 	if err != nil {
 		log.Println("[DATABASE]::CONNECTION_ERROR 💥")
 		log.Fatal(err)

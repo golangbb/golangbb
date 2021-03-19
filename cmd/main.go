@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	constants "github.com/golangbb/golangbb/v2/internal"
+	"github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
 	"log"
 )
@@ -28,5 +28,5 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	log.Fatal(app.Listen(":" + constants.PORT))
+	log.Fatal(app.Listen(":" + internal.PORT))
 }
