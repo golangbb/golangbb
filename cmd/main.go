@@ -3,30 +3,24 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golangbb/golangbb/v2/pkg/helpers"
-	"gorm.io/gorm"
-	"gorm.io/driver/sqlite"
+	constants "github.com/golangbb/golangbb/v2/internal"
+	"github.com/golangbb/golangbb/v2/internal/database"
 )
 
-var (
-	PORT = helpers.GetEnv("PORT", "3000")
-	DATABASE_NAME = helpers.GetEnv("DATABASE_NAME", "golangbb.db")
-)
 
 func init() {
-	fmt.Println("🏗️ initializing golangBB...")
+	fmt.Println("[INIT]::INITIALISING 🏗️")
 
-	fmt.Println("💾 connecting to database...")
-	db, err := gorm.Open(sqlite.Open(DATABASE_NAME), &gorm.Config{})
-	if err != nil {
-		panic("💥 failed to connect database")
-	}
+	database.Connect()
 
-	fmt.Println("💾 running database migrations...")
-	db.AutoMigrate()
+	fmt.Println("[INIT]::RUNNING_DATABASE_MIGRATIONS 💾")
+	database.DB.AutoMigrate()
+
+	fmt.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
 }
 
 func main() {
+	fmt.Println("[MAIN]::BOOTSTRAPPING 🚀")
 	app := fiber.New()
 
 	app.Use(func(c *fiber.Ctx) error {
@@ -38,5 +32,6 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	app.Listen(":" + PORT)
+	app.Listen(":" + constants.PORT)
+	fmt.Println("[MAIN]::BOOTSTRAPPED 🚀")
 }
