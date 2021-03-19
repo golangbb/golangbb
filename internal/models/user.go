@@ -6,8 +6,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Name        string
+	UserName    string `gorm:"uniqueIndex" gorm:"not null" gorm:"size:32"`
 	DisplayName string
-	Email       string `gorm:"uniqueIndex" gorm:"not null"`
-	Password    string `gorm:"not null" gorm:"size:64"`
+	Password    string  `gorm:"not null" gorm:"size:64"`
+	Emails      []Email `gorm:"foreignKey:User"`
+	Groups      []Group `gorm:"many2many:users_groups;"`
 }

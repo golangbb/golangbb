@@ -12,7 +12,9 @@ var DB *gorm.DB
 
 func Connect() {
 	log.Println("[DATABASE]::CONNECTING 🔌")
-	db, err := gorm.Open(sqlite.Open(internal.DATABASENAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(internal.DATABASENAME), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		log.Println("[DATABASE]::CONNECTION_ERROR 💥")
 		log.Fatal(err)
@@ -25,6 +27,12 @@ func Connect() {
 
 func Initialise() {
 	log.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
-	DB.AutoMigrate(&models.User{})
+	err := DB.AutoMigrate(models.Models()...)
+	if err != nil {
+		log.Println("[DATABASE]::MIGRATION_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
+	}
+
 	log.Println("[DATABASE]::DATABASE_MIGRATIONS_COMPLETE 💾")
 }
