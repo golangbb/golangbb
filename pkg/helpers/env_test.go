@@ -6,27 +6,25 @@ import (
 	"os"
 )
 
-var _ = Describe("Repository", func() {
+var _ = Describe("GetEnv", func() {
 	var envVarKey = "envVarKey"
 	var envVarValue = "envVarValue"
 	var fallbackValue = "fallbackValue"
 
-	Context("GetEnv", func() {
-		BeforeEach(func() {
-			os.Unsetenv(envVarKey)
+	BeforeEach(func() {
+		os.Unsetenv(envVarKey)
+	})
+	When("Environment Variable is set", func() {
+		It("should get the Environment Variable value from the OS", func() {
+			os.Setenv(envVarKey, envVarValue)
+			grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
+			Expect(grabbedEnvVarValue).Should(BeIdenticalTo(envVarValue))
 		})
-		When("Environment Variable is set", func() {
-			It("should get the Environment Variable value from the OS", func() {
-				os.Setenv(envVarKey, envVarValue)
-				grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
-				Expect(grabbedEnvVarValue).Should(BeIdenticalTo(envVarValue))
-			})
-		})
-		When("Environment Variable is not set", func() {
-			It("should get use the fallback value", func() {
-				grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
-				Expect(grabbedEnvVarValue).Should(BeIdenticalTo(fallbackValue))
-			})
+	})
+	When("Environment Variable is not set", func() {
+		It("should get use the fallback value", func() {
+			grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
+			Expect(grabbedEnvVarValue).Should(BeIdenticalTo(fallbackValue))
 		})
 	})
 })
