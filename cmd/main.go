@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	constants "github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
+	"log"
 )
 
 
@@ -28,6 +29,5 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	app.Listen(":" + constants.PORT)
-	fmt.Println("[MAIN]::BOOTSTRAPPED 🚀")
+	log.Fatal(app.Listen(":" + constants.PORT))
 }
