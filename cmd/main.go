@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	constants "github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
@@ -10,14 +9,14 @@ import (
 
 
 func init() {
-	fmt.Println("[INIT]::INITIALISING 🏗️")
+	log.Println("[INIT]::INITIALISING 🏗️")
 	database.Connect()
 	database.Initialise()
-	fmt.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
+	log.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
 }
 
 func main() {
-	fmt.Println("[MAIN]::BOOTSTRAPPING 🚀")
+	log.Println("[MAIN]::BOOTSTRAPPING 🚀")
 	app := fiber.New()
 
 	app.Use(func(c *fiber.Ctx) error {
