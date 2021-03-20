@@ -1,21 +1,37 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"log"
 )
 
 
-func init() {
+func initialise() *sql.DB {
 	log.Println("[INIT]::INITIALISING 🏗️")
-	database.Connect()
+	dbConnection := database.Connect(sqlite.Open(internal.DATABASENAME), gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+
+	sqlDb, dbErr := dbConnection.DB()
+	if dbErr != nil {
+		log.Println("[INIT]::CONNECTION_ERROR 💥")
+		log.Fatal(dbErr)
+		panic(dbErr)
+	}
 	database.Initialise()
 	log.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
+	return sqlDb
 }
 
 func main() {
+	db := initialise()
+	defer db.Close()
+
 	log.Println("[MAIN]::BOOTSTRAPPING 🚀")
 	app := fiber.New()
 
@@ -28,5 +44,6 @@ func main() {
 		return c.SendString("ok")
 	})
 
+	log.Println("[MAIN]::BOOTSTRAPPED 🚀")
 	log.Fatal(app.Listen(":" + internal.PORT))
 }

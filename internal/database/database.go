@@ -1,33 +1,30 @@
 package database
 
 import (
-	"github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/models"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 )
 
-var DB *gorm.DB
+var DBConnection *gorm.DB
 
-func Connect() {
+func Connect(dialector gorm.Dialector, config gorm.Config) *gorm.DB {
 	log.Println("[DATABASE]::CONNECTING 🔌")
-	db, err := gorm.Open(sqlite.Open(internal.DATABASENAME), &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
+	db, err := gorm.Open(dialector, &config)
 	if err != nil {
 		log.Println("[DATABASE]::CONNECTION_ERROR 💥")
 		log.Fatal(err)
 		panic(err)
 	}
 
-	DB = db
+	DBConnection = db
 	log.Println("[DATABASE]::CONNECTED 🔌")
+	return DBConnection
 }
 
 func Initialise() {
 	log.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
-	err := DB.AutoMigrate(models.Models()...)
+	err := DBConnection.AutoMigrate(models.Models()...)
 	if err != nil {
 		log.Println("[DATABASE]::MIGRATION_ERROR 💥")
 		log.Fatal(err)
