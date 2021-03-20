@@ -12,7 +12,7 @@ var _ = Describe("Models", func() {
 		It("should return a slice containing a pointer to each model", func() {
 			models := Models()
 			Expect(models).Should(Equal([]interface{}{
-				&Email{}, &Group{}, &User{},
+				&Discussion{}, &Email{}, &Group{}, &Post{}, &Topic{}, &User{},
 			}))
 		})
 		It("should return a slice with a length equal to the number of models defined", func() {
