@@ -13,17 +13,30 @@ import (
 
 func initialise() *sql.DB {
 	log.Println("[INIT]::INITIALISING 🏗️")
-	dbConnection := database.Connect(sqlite.Open(internal.DATABASENAME), gorm.Config{
+	dbConnection, err := database.Connect(sqlite.Open(internal.DATABASENAME), gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 
-	sqlDb, dbErr := dbConnection.DB()
-	if dbErr != nil {
-		log.Println("[INIT]::CONNECTION_ERROR 💥")
-		log.Fatal(dbErr)
-		panic(dbErr)
+	if err != nil {
+		log.Println("[INIT]::CREATE_CONNECTION_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
 	}
-	database.Initialise()
+
+	sqlDb, err := dbConnection.DB()
+	if err != nil {
+		log.Println("[INIT]::GET_UNDERLYING_SQL_CONNECTION_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
+	}
+
+	err = database.Initialise()
+	if err != nil {
+		log.Println("[INIT]::DATABASE_INITIALISE_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
+	}
+	
 	log.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
 	return sqlDb
 }

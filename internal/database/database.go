@@ -8,28 +8,27 @@ import (
 
 var DBConnection *gorm.DB
 
-func Connect(dialector gorm.Dialector, config gorm.Config) *gorm.DB {
+func Connect(dialector gorm.Dialector, config gorm.Config) (*gorm.DB, error) {
 	log.Println("[DATABASE]::CONNECTING 🔌")
 	db, err := gorm.Open(dialector, &config)
 	if err != nil {
 		log.Println("[DATABASE]::CONNECTION_ERROR 💥")
-		log.Fatal(err)
-		panic(err)
+		return nil, err
 	}
 
 	DBConnection = db
 	log.Println("[DATABASE]::CONNECTED 🔌")
-	return DBConnection
+	return DBConnection, nil
 }
 
-func Initialise() {
+func Initialise() error {
 	log.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
 	err := DBConnection.AutoMigrate(models.Models()...)
 	if err != nil {
 		log.Println("[DATABASE]::MIGRATION_ERROR 💥")
-		log.Fatal(err)
-		panic(err)
+		return err
 	}
 
 	log.Println("[DATABASE]::DATABASE_MIGRATIONS_COMPLETE 💾")
+	return nil
 }
