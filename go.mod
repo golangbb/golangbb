@@ -3,6 +3,7 @@ module github.com/golangbb/golangbb/v2
 go 1.16
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gofiber/fiber/v2 v2.6.0
 	github.com/jinzhu/now v1.1.2 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect

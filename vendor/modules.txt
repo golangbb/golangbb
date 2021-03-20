@@ -1,3 +1,6 @@
+# github.com/DATA-DOG/go-sqlmock v1.5.0
+## explicit
+github.com/DATA-DOG/go-sqlmock
 # github.com/andybalholm/brotli v1.0.0
 github.com/andybalholm/brotli
 # github.com/fsnotify/fsnotify v1.4.9
