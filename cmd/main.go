@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golangbb/golangbb/v2/internal"
 	"github.com/golangbb/golangbb/v2/internal/database"
+	"github.com/golangbb/golangbb/v2/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -30,13 +31,13 @@ func initialise() *sql.DB {
 		panic(err)
 	}
 
-	err = database.Initialise()
+	err = database.Initialise(models.Models()...)
 	if err != nil {
 		log.Println("[INIT]::DATABASE_INITIALISE_ERROR 💥")
 		log.Fatal(err)
 		panic(err)
 	}
-	
+
 	log.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
 	return sqlDb
 }

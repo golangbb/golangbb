@@ -1,12 +1,14 @@
 package database
 
 import (
-	"github.com/golangbb/golangbb/v2/internal/models"
+	"errors"
 	"gorm.io/gorm"
 	"log"
 )
 
 var DBConnection *gorm.DB
+
+var NoDatabaseConnectionErr = errors.New("no database connection")
 
 func Connect(dialector gorm.Dialector, config gorm.Config) (*gorm.DB, error) {
 	log.Println("[DATABASE]::CONNECTING 🔌")
@@ -21,9 +23,13 @@ func Connect(dialector gorm.Dialector, config gorm.Config) (*gorm.DB, error) {
 	return DBConnection, nil
 }
 
-func Initialise() error {
+func Initialise(models ...interface{}) error {
 	log.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
-	err := DBConnection.AutoMigrate(models.Models()...)
+	if DBConnection == nil {
+		return NoDatabaseConnectionErr
+	}
+
+	err := DBConnection.AutoMigrate(models...)
 	if err != nil {
 		log.Println("[DATABASE]::MIGRATION_ERROR 💥")
 		return err
