@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"github.com/golangbb/golangbb/v2/internal/database"
 	"gorm.io/gorm"
 	"log"
@@ -15,9 +14,6 @@ type User struct {
 	Emails      []*Email
 	Groups      []Group `gorm:"many2many:users_groups;"`
 }
-
-var ErrEmptyUserName = errors.New("empty UserName not allowed")
-var ErrEmptyPassword = errors.New("empty Password not allowed")
 
 func CreateUser(user *User) error {
 	if user.UserName == "" {

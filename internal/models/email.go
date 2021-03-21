@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"github.com/golangbb/golangbb/v2/internal/database"
 	"gorm.io/gorm"
 	"log"
@@ -16,8 +15,6 @@ type Email struct {
 	User      User           `gorm:"foreignkey:UserID"`
 	UserID    uint
 }
-
-var ErrEmptyUserID = errors.New("empty UserID allowed")
 
 func CreateEmail(email *Email) error {
 	if email.UserID == 0 {
