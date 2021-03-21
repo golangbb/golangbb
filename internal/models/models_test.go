@@ -60,7 +60,7 @@ var _ = Describe("Models", func() {
 				"CREATE TABLE `groups` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text NOT NULL,`author_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_groups_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`))",
 				"CREATE INDEX `idx_groups_deleted_at` ON `groups`(`deleted_at`)",
 				"CREATE TABLE `users_groups` (`user_id` integer,`group_id` integer,PRIMARY KEY (`user_id`,`group_id`),CONSTRAINT `fk_users_groups_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_users_groups_group` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`))",
-				"CREATE TABLE `topics` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`title` text,`parent_id` integer,PRIMARY KEY (`id`))",
+				"CREATE TABLE `topics` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`title` text,`parent_id` integer,`author_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_topics_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`))",
 				"CREATE UNIQUE INDEX `idx_topics_title` ON `topics`(`title`)",
 				"CREATE INDEX `idx_topics_deleted_at` ON `topics`(`deleted_at`)",
 				"CREATE TABLE `discussions` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`author_id` integer,`topic_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_discussions_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_discussions_topic` FOREIGN KEY (`topic_id`) REFERENCES `topics`(`id`))",
