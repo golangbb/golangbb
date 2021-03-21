@@ -40,7 +40,7 @@ var _ = Describe("Topic", func() {
 			It("should insert a new Topic record", func() {
 				topic := &Topic{
 					AuthorID: 10,
-					Title:     "Marvel",
+					Title:    "Marvel",
 				}
 
 				mock.ExpectBegin()
@@ -63,7 +63,7 @@ var _ = Describe("Topic", func() {
 				parentID := uint(20)
 				topic := &Topic{
 					AuthorID: 10,
-					Title:     "Marvel",
+					Title:    "Marvel",
 					ParentID: &parentID,
 				}
 
@@ -85,7 +85,7 @@ var _ = Describe("Topic", func() {
 		When("inserting a Topic without a AuthorID", func() {
 			It("should not attempt to insert a new Topic record", func() {
 				topic := &Topic{
-					Title:     "Marvel",
+					Title: "Marvel",
 				}
 
 				err := CreateTopic(topic)
@@ -116,7 +116,7 @@ var _ = Describe("Topic", func() {
 			It("should rollback transaction and return error", func() {
 				topic := &Topic{
 					AuthorID: 10,
-					Title:     "Marvel",
+					Title:    "Marvel",
 				}
 
 				mock.ExpectBegin()
@@ -139,7 +139,7 @@ var _ = Describe("Topic", func() {
 				userID := uint(10)
 				topic := &Topic{
 					AuthorID: userID,
-					Title:     "Marvel",
+					Title:    "Marvel",
 					Author: User{
 						Model: gorm.Model{ID: userID},
 					},
@@ -164,7 +164,7 @@ var _ = Describe("Topic", func() {
 			It("should not attempt to insert a new Topic record", func() {
 				topic := &Topic{
 					AuthorID: 10,
-					Title:     "Marvel",
+					Title:    "Marvel",
 					Parent: &Topic{
 						Model: gorm.Model{ID: 1},
 					},
@@ -186,4 +186,3 @@ var _ = Describe("Topic", func() {
 		})
 	})
 })
-
