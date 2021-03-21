@@ -71,6 +71,7 @@ var _ = Describe("Models", func() {
 			It("should run expected migrations on database", func() {
 				db, mock, err := sqlmock.New()
 				Expect(err).ShouldNot(HaveOccurred())
+				defer db.Close()
 
 				_, err = database.Connect(sqlite.Dialector{
 					DriverName: "sqlite",
