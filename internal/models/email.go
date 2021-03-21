@@ -11,5 +11,5 @@ type Email struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	User      User           `gorm:"foreignkey:UserID"`
-	UserID    *uint
+	UserID    uint
 }
