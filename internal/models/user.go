@@ -11,7 +11,7 @@ type User struct {
 	UserName    string `gorm:"uniqueIndex" gorm:"size:32"`
 	DisplayName string `gorm:"not null" gorm:"size:32"`
 	Password    string `gorm:"not null" gorm:"size:64"`
-	Emails      []*Email
+	Emails      []Email
 	Groups      []Group `gorm:"many2many:users_groups;"`
 }
 
@@ -41,8 +41,8 @@ func CreateUser(user *User) error {
 			return nil
 		}
 
-		for _, email := range user.Emails {
-			email.UserID = user.ID
+		for i, _ := range user.Emails {
+			user.Emails[i].UserID = user.ID
 		}
 
 		if err := tx.Omit("User").CreateInBatches(&user.Emails, 10).Error; err != nil {

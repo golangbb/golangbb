@@ -169,7 +169,7 @@ var _ = Describe("User", func() {
 					UserName:    "MotherOfDragons",
 					DisplayName: "Mother Of Dragons",
 					Password:    "password",
-					Emails: []*Email{
+					Emails: []Email{
 						{
 							Email: "dany@got.com",
 						},
@@ -203,7 +203,7 @@ var _ = Describe("User", func() {
 					UserName:    "MotherOfDragons",
 					DisplayName: "Mother Of Dragons",
 					Password:    "password",
-					Emails: []*Email{
+					Emails: []Email{
 						{
 							Email: "dany@got.com",
 						},
@@ -239,7 +239,7 @@ var _ = Describe("User", func() {
 					UserName:    "MotherOfDragons",
 					DisplayName: "Mother Of Dragons",
 					Password:    "password",
-					Emails: []*Email{
+					Emails: []Email{
 						{
 							Email: "dany@got.com",
 						},
