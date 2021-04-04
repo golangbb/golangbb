@@ -1,32 +1,52 @@
 package main
 
 import (
-	"fmt"
+	"database/sql"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golangbb/golangbb/v2/pkg/helpers"
-	"gorm.io/gorm"
+	"github.com/golangbb/golangbb/v2/internal"
+	"github.com/golangbb/golangbb/v2/internal/database"
+	"github.com/golangbb/golangbb/v2/internal/models"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"log"
 )
 
-var (
-	PORT = helpers.GetEnv("PORT", "3000")
-	DATABASE_NAME = helpers.GetEnv("DATABASE_NAME", "golangbb.db")
-)
+func initialise() *sql.DB {
+	log.Println("[INIT]::INITIALISING 🏗️")
+	dbConnection, err := database.Connect(sqlite.Open(internal.DATABASENAME), gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+		SkipDefaultTransaction:                   true,
+	})
 
-func init() {
-	fmt.Println("🏗️ initializing golangBB...")
-
-	fmt.Println("💾 connecting to database...")
-	db, err := gorm.Open(sqlite.Open(DATABASE_NAME), &gorm.Config{})
 	if err != nil {
-		panic("💥 failed to connect database")
+		log.Println("[INIT]::CREATE_CONNECTION_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
 	}
 
-	fmt.Println("💾 running database migrations...")
-	db.AutoMigrate()
+	sqlDb, err := dbConnection.DB()
+	if err != nil {
+		log.Println("[INIT]::GET_UNDERLYING_SQL_CONNECTION_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
+	}
+
+	err = database.Initialise(models.Models()...)
+	if err != nil {
+		log.Println("[INIT]::DATABASE_INITIALISE_ERROR 💥")
+		log.Fatal(err)
+		panic(err)
+	}
+
+	log.Println("[INIT]::INITIALISATION_COMPLETE 🏗️")
+	return sqlDb
 }
 
 func main() {
+	db := initialise()
+	defer db.Close()
+
+	log.Println("[MAIN]::BOOTSTRAPPING 🚀")
 	app := fiber.New()
 
 	app.Use(func(c *fiber.Ctx) error {
@@ -38,5 +58,6 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	app.Listen(":" + PORT)
+	log.Println("[MAIN]::BOOTSTRAPPED 🚀")
+	log.Fatal(app.Listen(":" + internal.PORT))
 }

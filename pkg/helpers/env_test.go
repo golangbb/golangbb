@@ -1,35 +1,30 @@
 package helpers
 
 import (
-	"gotest.tools/v3/assert"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	"os"
-	"testing"
 )
 
-func TestGetEnv(t *testing.T) {
-	t.Run("should return env var from os", func(t *testing.T) {
-		envVarKey := "envVarKey"
-		envVarValue := "envVarValue"
-		fallbackValue := "fallbackValue"
+var _ = Describe("GetEnv", func() {
+	var envVarKey = "envVarKey"
+	var envVarValue = "envVarValue"
+	var fallbackValue = "fallbackValue"
 
-		os.Setenv(envVarKey, envVarValue)
-		grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
-
-		assert.Equal(t, grabbedEnvVarValue, envVarValue)
-		assert.Assert(t, grabbedEnvVarValue != fallbackValue)
-
+	BeforeEach(func() {
 		os.Unsetenv(envVarKey)
 	})
-
-	t.Run("should return fallback value when env var not set", func(t *testing.T) {
-		envVarKey := "envVarKey"
-		envVarValue := "envVarValue"
-		fallbackValue := "fallbackValue"
-
-		os.Unsetenv(envVarKey)
-		grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
-
-		assert.Equal(t, grabbedEnvVarValue, fallbackValue)
-		assert.Assert(t, grabbedEnvVarValue != envVarValue)
+	When("Environment Variable is set", func() {
+		It("should get the Environment Variable value from the OS", func() {
+			os.Setenv(envVarKey, envVarValue)
+			grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
+			Expect(grabbedEnvVarValue).Should(BeIdenticalTo(envVarValue))
+		})
 	})
-}
+	When("Environment Variable is not set", func() {
+		It("should get use the fallback value", func() {
+			grabbedEnvVarValue := GetEnv(envVarKey, fallbackValue)
+			Expect(grabbedEnvVarValue).Should(BeIdenticalTo(fallbackValue))
+		})
+	})
+})
