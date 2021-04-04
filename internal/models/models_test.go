@@ -63,9 +63,9 @@ var _ = Describe("Models", func() {
 				"CREATE TABLE `topics` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`title` text,`parent_id` integer,`author_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_topics_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`))",
 				"CREATE UNIQUE INDEX `idx_topics_title` ON `topics`(`title`)",
 				"CREATE INDEX `idx_topics_deleted_at` ON `topics`(`deleted_at`)",
-				"CREATE TABLE `discussions` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`author_id` integer,`topic_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_discussions_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_discussions_topic` FOREIGN KEY (`topic_id`) REFERENCES `topics`(`id`))",
+				"CREATE TABLE `discussions` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`title` text NOT NULL,`author_id` integer NOT NULL,`topic_id` integer NOT NULL,PRIMARY KEY (`id`),CONSTRAINT `fk_discussions_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_discussions_topic` FOREIGN KEY (`topic_id`) REFERENCES `topics`(`id`))",
 				"CREATE INDEX `idx_discussions_deleted_at` ON `discussions`(`deleted_at`)",
-				"CREATE TABLE `posts` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`content` text,`author_id` integer,PRIMARY KEY (`id`),CONSTRAINT `fk_posts_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`))",
+				"CREATE TABLE `posts` (`id` integer,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`content` text,`author_id` integer NOT NULL,`discussion_id` integer NOT NULL,PRIMARY KEY (`id`),CONSTRAINT `fk_posts_author` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_discussions_posts` FOREIGN KEY (`discussion_id`) REFERENCES `discussions`(`id`))",
 				"CREATE INDEX `idx_posts_deleted_at` ON `posts`(`deleted_at`)",
 			}
 			It("should run expected migrations on database", func() {
