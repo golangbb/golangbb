@@ -39,9 +39,9 @@ var _ = Describe("Post", func() {
 		When("inserting a Post", func() {
 			It("should insert a new Post record with an Author an a Discussion", func() {
 				post := &Post{
-					AuthorID: 10,
+					AuthorID:     10,
 					DiscussionID: 5,
-					Content: "Marvel rules, DC drools",
+					Content:      "Marvel rules, DC drools",
 				}
 
 				mock.ExpectBegin()
@@ -62,7 +62,7 @@ var _ = Describe("Post", func() {
 			It("should not attempt to insert a new Post record and return an error", func() {
 				post := &Post{
 					DiscussionID: 5,
-					Content: "Marvel rules, DC drools",
+					Content:      "Marvel rules, DC drools",
 				}
 
 				err := CreatePost(post)
@@ -78,7 +78,7 @@ var _ = Describe("Post", func() {
 			It("should not attempt to insert a new Post record and return an error", func() {
 				post := &Post{
 					AuthorID: 10,
-					Content: "Marvel rules, DC drools",
+					Content:  "Marvel rules, DC drools",
 				}
 
 				err := CreatePost(post)
@@ -93,7 +93,7 @@ var _ = Describe("Post", func() {
 		When("inserting a Post without Content", func() {
 			It("should not attempt to insert a new Post record and return an error", func() {
 				post := &Post{
-					AuthorID: 10,
+					AuthorID:     10,
 					DiscussionID: 5,
 				}
 
@@ -109,9 +109,9 @@ var _ = Describe("Post", func() {
 		When("inserting a Post that errors", func() {
 			It("should rollback transaction and return error", func() {
 				post := &Post{
-					AuthorID: 10,
+					AuthorID:     10,
 					DiscussionID: 5,
-					Content: "Marvel rules, DC drools",
+					Content:      "Marvel rules, DC drools",
 				}
 
 				mock.ExpectBegin()
@@ -132,11 +132,11 @@ var _ = Describe("Post", func() {
 			It("should not attempt to insert a new Discussion record", func() {
 				discussionID := uint(10)
 				post := &Post{
-					AuthorID: 10,
+					AuthorID:     10,
 					DiscussionID: 5,
-					Content: "Marvel rules, DC drools",
+					Content:      "Marvel rules, DC drools",
 					Discussion: Discussion{
-						Model:    gorm.Model{ ID: discussionID},
+						Model: gorm.Model{ID: discussionID},
 					},
 				}
 
@@ -158,9 +158,9 @@ var _ = Describe("Post", func() {
 			It("should not attempt to insert a new Author record", func() {
 				userID := uint(10)
 				post := &Post{
-					AuthorID: userID,
+					AuthorID:     userID,
 					DiscussionID: 5,
-					Content: "Marvel rules, DC drools",
+					Content:      "Marvel rules, DC drools",
 					Author: User{
 						Model: gorm.Model{ID: userID},
 					},

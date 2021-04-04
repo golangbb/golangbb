@@ -41,7 +41,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -75,7 +75,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -100,7 +100,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 				}
 
 				err := CreateDiscussion(discussion)
@@ -116,7 +116,7 @@ var _ = Describe("Discussion", func() {
 			It("should not attempt to insert a new Discussion record and return an error", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
-					TopicID: 20,
+					TopicID:  20,
 				}
 
 				err := CreateDiscussion(discussion)
@@ -131,7 +131,7 @@ var _ = Describe("Discussion", func() {
 		When("inserting a Discussion without an AuthorID", func() {
 			It("should not attempt to insert a new Discussion record and return an error", func() {
 				discussion := &Discussion{
-					Title:    "Marvel vs DC",
+					Title:   "Marvel vs DC",
 					TopicID: 20,
 				}
 
@@ -165,7 +165,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -199,7 +199,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -226,7 +226,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -264,7 +264,7 @@ var _ = Describe("Discussion", func() {
 					},
 					AuthorID: userID,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -299,8 +299,8 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: topicID,
-					Topic: Topic{Model: gorm.Model{ID: topicID}},
+					TopicID:  topicID,
+					Topic:    Topic{Model: gorm.Model{ID: topicID}},
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -335,7 +335,7 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: userID,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
 							Content: "some content",
@@ -373,10 +373,10 @@ var _ = Describe("Discussion", func() {
 				discussion := &Discussion{
 					AuthorID: 10,
 					Title:    "Marvel vs DC",
-					TopicID: 20,
+					TopicID:  20,
 					Posts: []Post{
 						{
-							Content: "some content",
+							Content:    "some content",
 							Discussion: Discussion{Model: gorm.Model{ID: discussionID}},
 						},
 					},
