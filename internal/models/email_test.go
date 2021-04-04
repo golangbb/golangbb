@@ -40,7 +40,7 @@ var _ = Describe("Email", func() {
 			It("should insert a new Email record", func() {
 				email := &Email{
 					UserID: 10,
-					Email: "ironman@mcu.com",
+					Email:  "ironman@mcu.com",
 				}
 
 				mock.ExpectBegin()
@@ -77,7 +77,7 @@ var _ = Describe("Email", func() {
 			It("should rollback transaction and return error", func() {
 				email := &Email{
 					UserID: 10,
-					Email: "ironman@mcu.com",
+					Email:  "ironman@mcu.com",
 				}
 
 				mock.ExpectBegin()
@@ -99,11 +99,11 @@ var _ = Describe("Email", func() {
 			It("should not attempt to insert a new user record", func() {
 				userID := uint(10)
 				email := &Email{
-					Email: "ironman@mcu.com",
+					Email:  "ironman@mcu.com",
 					UserID: userID,
 					User: User{
-						Model:       gorm.Model{
-							ID:        userID,
+						Model: gorm.Model{
+							ID: userID,
 						},
 					},
 				}

@@ -11,12 +11,11 @@ import (
 	"log"
 )
 
-
 func initialise() *sql.DB {
 	log.Println("[INIT]::INITIALISING 🏗️")
 	dbConnection, err := database.Connect(sqlite.Open(internal.DATABASENAME), gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
-		SkipDefaultTransaction: true,
+		SkipDefaultTransaction:                   true,
 	})
 
 	if err != nil {
