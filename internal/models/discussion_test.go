@@ -194,21 +194,26 @@ var _ = Describe("Discussion", func() {
 			})
 		})
 
-		When("inserting a Topic that errors", func() {
+		When("inserting a Discussion that errors", func() {
 			It("should rollback transaction and return error", func() {
-				topic := &Topic{
+				discussion := &Discussion{
 					AuthorID: 10,
-					Title:    "Marvel",
+					Title:    "Marvel vs DC",
+					TopicID: 20,
+					Posts: []Post{
+						{
+							Content: "some content",
+						},
+					},
 				}
 
 				mock.ExpectBegin()
-				sql := regexp.QuoteMeta("INSERT INTO `topics` (`created_at`,`updated_at`,`deleted_at`,`title`,`parent_id`,`author_id`) VALUES (?,?,?,?,?,?)")
-				mock.ExpectExec(sql).
-					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, topic.Title, nil, topic.AuthorID).
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
 					WillReturnError(errors.New("some db error"))
 				mock.ExpectRollback()
 
-				err := CreateTopic(topic)
+				err := CreateDiscussion(discussion)
 				Expect(err).Should(HaveOccurred())
 
 				err = mock.ExpectationsWereMet()
@@ -216,25 +221,71 @@ var _ = Describe("Discussion", func() {
 			})
 		})
 
-		When("inserting a Topic with an Author", func() {
-			It("should not attempt to insert a new User/Author record", func() {
-				userID := uint(10)
-				topic := &Topic{
-					AuthorID: userID,
-					Title:    "Marvel",
-					Author: User{
-						Model: gorm.Model{ID: userID},
+		When("inserting a Post, for the Discussion, that errors ", func() {
+			It("should rollback transaction and return error", func() {
+				discussion := &Discussion{
+					AuthorID: 10,
+					Title:    "Marvel vs DC",
+					TopicID: 20,
+					Posts: []Post{
+						{
+							Content: "some content",
+						},
 					},
 				}
 
+				newDiscussionID := int64(1)
+
 				mock.ExpectBegin()
-				sql := regexp.QuoteMeta("INSERT INTO `topics` (`created_at`,`updated_at`,`deleted_at`,`title`,`parent_id`,`author_id`) VALUES (?,?,?,?,?,?)")
-				mock.ExpectExec(sql).
-					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, topic.Title, nil, topic.AuthorID).
-					WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
+					WillReturnResult(sqlmock.NewResult(newDiscussionID, 1))
+				mock.ExpectExec("SAVEPOINT .").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`content`,`author_id`,`discussion_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Posts[0].Content, discussion.AuthorID, newDiscussionID).
+					WillReturnError(errors.New("some db error"))
+				mock.ExpectRollback()
+
+				err := CreateDiscussion(discussion)
+				Expect(err).Should(HaveOccurred())
+
+				err = mock.ExpectationsWereMet()
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		When("inserting a Discussion with a Post and a Author", func() {
+			It("should not attempt to insert a new Author", func() {
+				userID := uint(10)
+				discussion := &Discussion{
+					Author: User{
+						Model: gorm.Model{ID: userID},
+					},
+					AuthorID: userID,
+					Title:    "Marvel vs DC",
+					TopicID: 20,
+					Posts: []Post{
+						{
+							Content: "some content",
+						},
+					},
+				}
+
+				newDiscussionID := int64(1)
+
+				mock.ExpectBegin()
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
+					WillReturnResult(sqlmock.NewResult(newDiscussionID, 1))
+				mock.ExpectExec("SAVEPOINT .").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`content`,`author_id`,`discussion_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Posts[0].Content, discussion.AuthorID, newDiscussionID).
+					WillReturnResult(sqlmock.NewResult(0, 1))
 				mock.ExpectCommit()
 
-				err := CreateTopic(topic)
+				err := CreateDiscussion(discussion)
 				Expect(err).ShouldNot(HaveOccurred())
 
 				err = mock.ExpectationsWereMet()
@@ -242,24 +293,109 @@ var _ = Describe("Discussion", func() {
 			})
 		})
 
-		When("inserting a Topic with a Parent Topic", func() {
-			It("should not attempt to insert a new Topic record", func() {
-				topic := &Topic{
+		When("inserting a Discussion with a Post and Topic", func() {
+			It("should not attempt to insert a new Topic", func() {
+				topicID := uint(20)
+				discussion := &Discussion{
 					AuthorID: 10,
-					Title:    "Marvel",
-					Parent: &Topic{
-						Model: gorm.Model{ID: 1},
+					Title:    "Marvel vs DC",
+					TopicID: topicID,
+					Topic: Topic{Model: gorm.Model{ID: topicID}},
+					Posts: []Post{
+						{
+							Content: "some content",
+						},
 					},
 				}
 
+				newDiscussionID := int64(1)
+
 				mock.ExpectBegin()
-				sql := regexp.QuoteMeta("INSERT INTO `topics` (`created_at`,`updated_at`,`deleted_at`,`title`,`parent_id`,`author_id`) VALUES (?,?,?,?,?,?)")
-				mock.ExpectExec(sql).
-					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, topic.Title, nil, topic.AuthorID).
-					WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
+					WillReturnResult(sqlmock.NewResult(newDiscussionID, 1))
+				mock.ExpectExec("SAVEPOINT .").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`content`,`author_id`,`discussion_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Posts[0].Content, discussion.AuthorID, newDiscussionID).
+					WillReturnResult(sqlmock.NewResult(0, 1))
 				mock.ExpectCommit()
 
-				err := CreateTopic(topic)
+				err := CreateDiscussion(discussion)
+				Expect(err).ShouldNot(HaveOccurred())
+
+				err = mock.ExpectationsWereMet()
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		When("inserting a Discussion with a Post with an Author", func() {
+			It("should not attempt to insert a new Author", func() {
+				userID := uint(10)
+				discussion := &Discussion{
+					AuthorID: userID,
+					Title:    "Marvel vs DC",
+					TopicID: 20,
+					Posts: []Post{
+						{
+							Content: "some content",
+							Author: User{
+								Model: gorm.Model{ID: userID},
+							},
+						},
+					},
+				}
+
+				newDiscussionID := int64(1)
+
+				mock.ExpectBegin()
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
+					WillReturnResult(sqlmock.NewResult(newDiscussionID, 1))
+				mock.ExpectExec("SAVEPOINT .").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`content`,`author_id`,`discussion_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Posts[0].Content, discussion.AuthorID, newDiscussionID).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+				mock.ExpectCommit()
+
+				err := CreateDiscussion(discussion)
+				Expect(err).ShouldNot(HaveOccurred())
+
+				err = mock.ExpectationsWereMet()
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		When("inserting a Discussion with a Post with a Discussion", func() {
+			It("should not attempt to insert a new Discussion", func() {
+				discussionID := uint(10)
+				discussion := &Discussion{
+					AuthorID: 10,
+					Title:    "Marvel vs DC",
+					TopicID: 20,
+					Posts: []Post{
+						{
+							Content: "some content",
+							Discussion: Discussion{Model: gorm.Model{ID: discussionID}},
+						},
+					},
+				}
+
+				newDiscussionID := int64(1)
+
+				mock.ExpectBegin()
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `discussions` (`created_at`,`updated_at`,`deleted_at`,`title`,`author_id`,`topic_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Title, discussion.AuthorID, discussion.TopicID).
+					WillReturnResult(sqlmock.NewResult(newDiscussionID, 1))
+				mock.ExpectExec("SAVEPOINT .").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+				mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`content`,`author_id`,`discussion_id`) VALUES (?,?,?,?,?,?)")).
+					WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg(), nil, discussion.Posts[0].Content, discussion.AuthorID, newDiscussionID).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+				mock.ExpectCommit()
+
+				err := CreateDiscussion(discussion)
 				Expect(err).ShouldNot(HaveOccurred())
 
 				err = mock.ExpectationsWereMet()
