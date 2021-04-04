@@ -1,30 +1,40 @@
 package database
 
 import (
-	constants "github.com/golangbb/golangbb/v2/internal"
-	"github.com/golangbb/golangbb/v2/internal/models"
-	"gorm.io/driver/sqlite"
+	"errors"
 	"gorm.io/gorm"
 	"log"
 )
 
-var DB *gorm.DB
+var DBConnection *gorm.DB
 
-func Connect() {
+var NoDatabaseConnectionErr = errors.New("no database connection")
+
+func Connect(dialector gorm.Dialector, config gorm.Config) (*gorm.DB, error) {
 	log.Println("[DATABASE]::CONNECTING 🔌")
-	db, err := gorm.Open(sqlite.Open(constants.DATABASE_NAME), &gorm.Config{})
+	db, err := gorm.Open(dialector, &config)
 	if err != nil {
 		log.Println("[DATABASE]::CONNECTION_ERROR 💥")
-		log.Fatal(err)
-		panic(err)
+		return nil, err
 	}
 
-	DB = db
+	DBConnection = db
 	log.Println("[DATABASE]::CONNECTED 🔌")
+	return DBConnection, nil
 }
 
-func Initialise() {
+func Initialise(models ...interface{}) error {
 	log.Println("[DATABASE]::RUNNING_DATABASE_MIGRATIONS 💾")
-	DB.AutoMigrate(&models.User{})
+	if DBConnection == nil {
+		return NoDatabaseConnectionErr
+	}
+
+	err := DBConnection.AutoMigrate(models...)
+	if err != nil {
+		log.Println("[DATABASE]::MIGRATION_ERROR 💥")
+		return err
+	}
+
 	log.Println("[DATABASE]::DATABASE_MIGRATIONS_COMPLETE 💾")
+	return nil
 }
